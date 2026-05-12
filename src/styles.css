@@ -159,7 +159,12 @@
   }
 
   body {
-    background: var(--background);
+    background-color: var(--background);
+    background-image: linear-gradient(rgba(20, 8, 7, 0.45), rgba(10, 4, 4, 0.9)), url("/images/hero-palace.jpg");
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-blend-mode: overlay;
     color: var(--foreground);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
@@ -260,6 +265,21 @@
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
+  }
+
+  @keyframes sectionGlow {
+    0%, 100% { transform: translateY(0) scale(1); opacity: 0.8; }
+    50% { transform: translateY(-16px) scale(1.05); opacity: 0.6; }
+  }
+  @keyframes sectionDrift {
+    0%, 100% { transform: translate(0, 0); }
+    50% { transform: translate(-14px, -10px); }
+  }
+  .animate-section-glow {
+    animation: sectionGlow 14s ease-in-out infinite;
+  }
+  .animate-section-drift {
+    animation: sectionDrift 16s ease-in-out infinite;
   }
 
   @keyframes slowPan {

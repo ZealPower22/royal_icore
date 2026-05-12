@@ -2,6 +2,17 @@ import { motion } from "framer-motion";
 import { useState } from "react";
 import { Ornament, SectionLabel } from "./Ornament";
 
+type CartItemPayload = {
+  id: string;
+  title: string;
+  label: string;
+  price: number;
+  source: string;
+};
+
+const reserveButtonClasses =
+  "mt-8 w-full inline-flex items-center justify-center rounded-xl border border-[var(--gold)]/70 bg-[var(--burgundy)] py-3 px-4 text-xs uppercase tracking-[0.3em] font-semibold text-[var(--ivory)] shadow-gold transition-all hover:bg-[var(--gold)] hover:text-[var(--burgundy-deep)]";
+
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
   show: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] as const } },
@@ -11,8 +22,12 @@ function SectionShell({ id, label, title, subtitle, children, dark = false }: {
   id: string; label: string; title: string; subtitle?: string; children: React.ReactNode; dark?: boolean;
 }) {
   return (
-    <section id={id} className={`relative py-28 md:py-40 px-6 ${dark ? "bg-[var(--burgundy-deep)]" : "bg-[var(--background)]"}`}>
-      <div className="mx-auto max-w-7xl">
+    <section id={id} className={`relative overflow-hidden py-28 md:py-40 px-6 ${dark ? "bg-[var(--burgundy-deep)] backdrop-blur-sm" : "bg-[var(--background)] backdrop-blur-sm"}`}>
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div className="absolute -left-16 top-16 h-80 w-80 rounded-full bg-[var(--gold)]/10 blur-3xl animate-section-glow" />
+        <div className="absolute -right-16 bottom-14 h-72 w-72 rounded-full bg-[var(--burgundy)]/15 blur-3xl animate-section-drift" />
+      </div>
+      <div className="relative mx-auto max-w-7xl">
         <motion.div
           initial="hidden"
           whileInView="show"
@@ -40,7 +55,7 @@ function SectionShell({ id, label, title, subtitle, children, dark = false }: {
 /* ---------------- TRUST ---------------- */
 export function Trust() {
   const items = [
-    { num: "200+", label: "Surgeons", desc: "Global participation" },
+    { num: "500+", label: "Surgeons", desc: "Global participation" },
     { num: "5-Year", label: "Patient Follow-up", desc: "Documented outcomes" },
     { num: "100%", label: "CBCT Documented", desc: "Complete dataset" },
     { num: "Indexed", label: "Research Pathway", desc: "Peer-reviewed" },
@@ -149,7 +164,7 @@ export function Principles() {
 /* ---------------- ROI / WHAT YOU GET ---------------- */
 export function WhatYouGet() {
   const items = [
-    { t: "CPD / CME Certificate", d: "Internationally recognized continuing education credits." },
+    { t: "NDC  Certificate", d: "recognized continuing education credits." },
     { t: "Digital Asset Pack", d: "Surgical videos, CBCT scans, prosthetic libraries — yours forever." },
     { t: "Clinical Hands-on Log", d: "Place 5–20 implants under direct mentor supervision." },
     { t: "Indexed Publication", d: "Co-author opportunity on peer-reviewed indexed journals." },
@@ -328,7 +343,7 @@ export function MedicalPanel() {
     { t: "Neurology", d: "Cranial nerve protection · Pain pathways · TMJ neurology", icon: "✦" },
     { t: "Psychiatry", d: "Patient anxiety · Body-image rehabilitation · Behavioral medicine", icon: "✦" },
     { t: "Bone Health", d: "Endocrinology · Bisphosphonate management · Osteoporosis protocols", icon: "✦" },
-    { t: "Patient Psychology", d: "Consent counseling · Long-term satisfaction · Outcome perception", icon: "✦" },
+    { t: "Nuclear Medicine", d: "Consent counseling · Long-term satisfaction · Outcome perception", icon: "✦" },
   ];
   return (
     <SectionShell
@@ -472,7 +487,7 @@ export function Venue() {
     { t: "Food Court", d: "Royal Rajasthani cuisine · Networking lounges", n: "04" },
   ];
   return (
-    <SectionShell id="venue" label="The Ground" title="Venue · CITRC Jaipur" dark>
+    <SectionShell id="venue" label="The Ground" title="Venue · SIAM Institute , Jaipur" dark>
       <div className="grid md:grid-cols-4 gap-6">
         {f.map((x, i) => (
           <motion.div
@@ -495,30 +510,38 @@ export function Venue() {
 }
 
 /* ---------------- PRICING ---------------- */
-export function Pricing() {
+export function Pricing({ onReserve }: { onReserve: (item: CartItemPayload) => void }) {
   const tiers = [
     {
+      id: "conference",
       t: "Conference",
       p: "₹9,999",
+      price: 9999,
       tagline: "Observer Pass",
       features: ["All keynote lectures", "Live surgery viewing", "Digital handouts", "CME certificate"],
     },
     {
+      id: "initiate",
       t: "Initiate",
       p: "₹29,999",
+      price: 29999,
       tagline: "Engaged Learner",
       features: ["Everything in Conference", "Hands-on workshop access", "Cadaver simulation", "Networking dinner"],
     },
     {
+      id: "specialist",
       t: "Specialist",
       p: "₹49,999",
+      price: 49999,
       tagline: "Clinical Path",
       featured: true,
       features: ["Everything in Initiate", "5–10 implants placement log", "Mentor pairing", "Digital asset pack"],
     },
     {
+      id: "pro-titan",
       t: "Pro Titan",
       p: "₹89,999",
+      price: 89999,
       tagline: "All Access · All Glory",
       features: ["Everything in Specialist", "20+ implant placements", "Indexed publication slot", "Recommendation letter", "Royal gala VIP table"],
     },
@@ -528,7 +551,7 @@ export function Pricing() {
       <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
         {tiers.map((t, i) => (
           <motion.div
-            key={t.t}
+            key={t.id}
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -555,16 +578,9 @@ export function Pricing() {
                 </li>
               ))}
             </ul>
-            <a
-              href="#cta"
-              className={`mt-8 text-center py-3 text-xs uppercase tracking-[0.3em] transition-all ${
-                t.featured
-                  ? "bg-[var(--gold)] text-[var(--burgundy-deep)] hover:bg-[var(--gold-soft)]"
-                  : "border border-[var(--gold)]/60 text-[var(--gold)] hover:bg-[var(--gold)] hover:text-[var(--burgundy-deep)]"
-              }`}
-            >
+            <button type="button" onClick={() => onReserve({ id: t.id, title: t.t, label: t.p, price: t.price, source: "Tier" })} className={reserveButtonClasses}>
               Reserve →
-            </a>
+            </button>
           </motion.div>
         ))}
       </div>
@@ -573,19 +589,19 @@ export function Pricing() {
 }
 
 /* ---------------- ADD-ONS ---------------- */
-export function AddOns() {
+export function AddOns({ onReserve }: { onReserve: (item: CartItemPayload) => void }) {
   const items = [
-    { t: "3D Printing Workshop", p: "+ ₹12,000", d: "2-day intensive · Bring your own scanner files." },
-    { t: "Zygomatic Add-On", p: "+ ₹18,000", d: "Cadaver lab + extended live OT access." },
-    { t: "Ozone Therapy Module", p: "+ ₹8,000", d: "Half-day certification with equipment training." },
-    { t: "Research Package", p: "+ ₹15,000", d: "Manuscript mentorship + indexed publication co-authorship." },
+    { id: "3d-print", t: "3D Printing Workshop", p: "+ ₹12,000", price: 12000, d: "2-day intensive · Bring your own scanner files." },
+    { id: "zygomatic", t: "Zygomatic Add-On", p: "+ ₹18,000", price: 18000, d: "Cadaver lab + extended live OT access." },
+    { id: "ozone", t: "Ozone Therapy Module", p: "+ ₹8,000", price: 8000, d: "Half-day certification with equipment training." },
+    { id: "research", t: "Research Package", p: "+ ₹15,000", price: 15000, d: "Manuscript mentorship + indexed publication co-authorship." },
   ];
   return (
     <SectionShell id="addons" label="Optional" title="Add-On Workshops" dark>
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {items.map((it, i) => (
           <motion.div
-            key={it.t}
+            key={it.id}
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -595,6 +611,9 @@ export function AddOns() {
             <h3 className="font-display text-lg text-[var(--ivory)]">{it.t}</h3>
             <div className="mt-3 font-display text-2xl gradient-gold-text">{it.p}</div>
             <p className="mt-3 text-sm text-[var(--ivory)]/65">{it.d}</p>
+            <button type="button" onClick={() => onReserve({ id: it.id, title: it.t, label: it.p, price: it.price, source: "Add-on" })} className={reserveButtonClasses}>
+              Reserve →
+            </button>
           </motion.div>
         ))}
       </div>

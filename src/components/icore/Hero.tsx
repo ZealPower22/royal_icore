@@ -26,9 +26,9 @@ export function Hero() {
           alt="Hawa Mahal palace, Jaipur"
           width={1920}
           height={1280}
-          className="h-full w-full object-cover ken-burns opacity-50"
+          className="h-full w-full object-cover ken-burns opacity-90 filter contrast-[1.08] saturate-[1.1] brightness-[0.95]"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-[var(--burgundy-deep)]/60 via-[var(--burgundy)]/40 to-[var(--burgundy-deep)]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[var(--burgundy-deep)]/65 via-[var(--burgundy)]/35 to-[var(--burgundy-deep)]" />
         <div className="absolute inset-0 gradient-hero" />
       </motion.div>
 
