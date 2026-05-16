@@ -1,5 +1,6 @@
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
+import { DailyFlowTimeline } from "./DailyFlowTimeline";
 import { Ornament, SectionLabel } from "./Ornament";
 
 type CartItemPayload = {
@@ -195,81 +196,169 @@ export function WhatYouGet() {
   );
 }
 
-/* ---------------- 7-DAY PROGRAM ---------------- */
+/* ====== INDIVIDUAL DAY TIMELINES ====== */
+// Timelines are now embedded directly in the Program component for each day
+
+/* ====== MAIN PROGRAM COMPONENT ====== */
 export function Program() {
+  const [expandedDay, setExpandedDay] = useState<number | null>(null);
+  
   const days = [
-    { d: "Day 1", t: "Opening & Foundations", b: ["Inauguration ceremony", "Keynote: The Cortex Unites", "Diagnostic protocols & CBCT workshop"] },
-    { d: "Day 2", t: "Osseointegration Masterclass", b: ["Conventional implant lectures", "Live surgery — single & multi-unit", "Case planning round-table"] },
-    { d: "Day 3", t: "Corticobasal Day", b: ["Immediate loading philosophy", "Full-arch live placements", "Bicortical engagement protocols"] },
-    { d: "Day 4", t: "Zygomatic Surgery Day", b: ["4-hour live zygomatic surgery", "Anatomy + complication management", "Hands-on cadaver simulation"] },
-    { d: "Day 5", t: "Digital & 3D Printing", b: ["Same-day prosthetics workflow", "Intraoral scanning to milling", "Print-design-deliver in <8 hrs"] },
-    { d: "Day 6", t: "Research & Publication", b: ["Manuscript writing workshop", "Statistical methods for clinicians", "Indexed journal submission strategy"] },
-    { d: "Day 7", t: "Gala & Cultural Night", b: ["Award ceremony", "Royal Rajasthani gala dinner", "Folk performances · Closing rites"] },
+    { d: "Day 1", t: "Opening & Foundations", date: "21 Nov" },
+    { d: "Day 2", t: "Osseointegration Masterclass", date: "22 Nov" },
+    { d: "Day 3", t: "Corticobasal Day", date: "23 Nov" },
+    { d: "Day 4", t: "Zygomatic Surgery Day", date: "24 Nov" },
+    { d: "Day 5", t: "Digital & 3D Printing", date: "25 Nov" },
+    { d: "Day 6", t: "Research & Publication", date: "26 Nov" },
+    { d: "Day 7", t: "Gala & Cultural Night", date: "27 Nov" },
   ];
+
+  const getTimelineItems = (index: number) => {
+    switch (index) {
+      case 0:
+        return [
+          { time: "09:00", t: "Registration & Welcome", d: "Badge collection · Welcome packet · Meet directors" },
+          { time: "10:00", t: "Inaugural Ceremony", d: "Live music · Formal inauguration · Global address" },
+          { time: "11:00", t: "Keynote Session", d: "The Cortex Unites — A history of innovation" },
+          { time: "13:00", t: "Lunch & Networking", d: "Round-table discussions · Faculty introductions" },
+          { time: "14:30", t: "Diagnostic Protocols Workshop", d: "CBCT interpretation · Case planning · Hands-on demos" },
+          { time: "17:00", t: "Q&A Panel", d: "Directors answer participant questions" },
+          { time: "19:30", t: "Welcome Dinner", d: "Casual networking · Meet global peers" },
+        ];
+      case 1:
+        return [
+          { time: "09:00", t: "Morning Briefing", d: "Day 2 objectives · Faculty panel introduction" },
+          { time: "10:00", t: "Classical Osseointegration Theory", d: "50-year paradigm · Branemark principles · Biological foundations" },
+          { time: "12:00", t: "CBCT Case Review", d: "Real patient cases · Planning methodology · Decision trees" },
+          { time: "13:00", t: "Lunch & Case Discussions", d: "Interactive round-table with faculty" },
+          { time: "14:30", t: "Live Single-Unit Surgery", d: "Real-time implant placement with commentary" },
+          { time: "16:00", t: "Multi-Unit Live Placement", d: "Full-arch case management · Timing · Sequencing" },
+          { time: "17:30", t: "Surgery Debrief", d: "Technical pearls · Complications avoidance · Q&A" },
+          { time: "19:30", t: "Surgeon's Dinner", d: "Exclusive faculty networking" },
+        ];
+      case 2:
+        return [
+          { time: "09:00", t: "Morning Philosophy Session", d: "Immediate loading paradigm · Cortical-first approach" },
+          { time: "10:30", t: "Anatomy Workshop", d: "Cortical anatomy · Engagement strategies · 3D planning" },
+          { time: "12:00", t: "Case Planning Lab", d: "Full-arch replanning · Multiple cases · Hands-on practice" },
+          { time: "13:00", t: "Lunch & Peer Discussions", d: "Clinical pearls exchange" },
+          { time: "14:30", t: "Live Full-Arch Placement #1", d: "Complete arch placement · Immediate loading protocol" },
+          { time: "16:30", t: "Live Full-Arch Placement #2", d: "Different anatomy · Problem-solving in real-time" },
+          { time: "18:00", t: "Complication Management", d: "What to do when cortex isn't perfect · Contingency plans" },
+          { time: "19:30", t: "Celebratory Dinner", d: "Day's achievements · Peer bonding" },
+        ];
+      case 3:
+        return [
+          { time: "09:00", t: "Zygomatic Anatomy Deep Dive", d: "3D anatomy · Trajectory planning · Virtual surgery" },
+          { time: "10:30", t: "Pre-surgical CBCT Analysis", d: "Sinus anatomy · Safety margins · Surgical approach selection" },
+          { time: "12:00", t: "Cadaver Simulation Lab", d: "Hands-on with anatomical models · Bone anatomy exploration" },
+          { time: "13:00", t: "Lunch & Faculty Q&A", d: "Expert consultation · Real patient cases" },
+          { time: "14:00", t: "Live Zygomatic Surgery - Block 1", d: "First 2-hour uninterrupted live case" },
+          { time: "16:15", t: "Break & Commentary", d: "Analysis of surgical approach · Technical pearls" },
+          { time: "17:00", t: "Live Zygomatic Surgery - Block 2", d: "Complex case completion · Troubleshooting" },
+          { time: "19:00", t: "Surgeon's Mastermind Dinner", d: "Elite networking with zygomatic specialists" },
+        ];
+      case 4:
+        return [
+          { time: "09:00", t: "Digital Workflow Overview", d: "CAD/CAM pipeline · Technology stack · Integration" },
+          { time: "10:00", t: "Intraoral Scanning Masterclass", d: "Scanning techniques · Data accuracy · File optimization" },
+          { time: "11:30", t: "3D Design Lab", d: "Full-arch design · Milling software · Prosthetic aesthetics" },
+          { time: "13:00", t: "Lunch & Technology Showcase", d: "Latest 3D printing innovations · Vendor expo" },
+          { time: "14:00", t: "Milling & Printing Workshop", d: "Hands-on with milling units · Resin printer operation · Curing protocols" },
+          { time: "15:30", t: "Live Case: Scan to Delivery", d: "Real patient case from scan to finished prosthesis" },
+          { time: "17:00", t: "Quality Control & Finishing", d: "Polishing · Adjustments · Patient insertion" },
+          { time: "19:00", t: "Tech Leaders Dinner", d: "Digital dentistry pioneers networking" },
+        ];
+      case 5:
+        return [
+          { time: "09:00", t: "Research Methodology Seminar", d: "Study design · Data collection · Statistical foundations" },
+          { time: "10:30", t: "Manuscript Writing Workshop", d: "Structure · Literature review · Results presentation" },
+          { time: "12:00", t: "Statistical Methods for Clinicians", d: "Practical statistics · CBCT analysis · Outcome measurement" },
+          { time: "13:00", t: "Lunch & Author Round-Tables", d: "Published researchers share insights" },
+          { time: "14:00", t: "Journal Submission Strategy", d: "Indexed journals · Peer review process · Publication timeline" },
+          { time: "15:30", t: "Co-Author Opportunity Briefing", d: "ICORE publication pathway · Your research contribution" },
+          { time: "16:30", t: "Q&A with Editorial Boards", d: "Journal editors answer questions" },
+          { time: "18:00", t: "Research Gala Reception", d: "Academic networking · Award announcements" },
+        ];
+      case 6:
+        return [
+          { time: "14:00", t: "Closing Academic Session", d: "Program review · Key takeaways · Faculty wisdom circle" },
+          { time: "15:30", t: "Awards Ceremony", d: "Best case presentations · Leadership recognition · Honors" },
+          { time: "17:00", t: "Preparation & Refreshment Break", d: "Rest, freshen up, prepare for evening" },
+          { time: "18:30", t: "Red Carpet Reception", d: "Welcome drinks · Photo opportunities · Pre-dinner mingling" },
+          { time: "19:30", t: "Royal Rajasthani Gala Dinner", d: "Multi-course feast · Royal heritage celebration" },
+          { time: "21:00", t: "Folk Performances & Entertainment", d: "Traditional Rajasthani dance · Live music · Cultural immersion" },
+          { time: "22:30", t: "Closing Rites & Farewell", d: "Torch lighting ceremony · Alumni induction · Goodbye circles" },
+          { time: "Late Night", t: "After-Party & Networking", d: "Informal celebrations · Final connections" },
+        ];
+      default:
+        return [];
+    }
+  };
+
   return (
-    <SectionShell id="program" label="The Itinerary" title="7 Days · Raw Science" subtitle="A meticulously curated week — lectures, live surgery, masterclasses and ceremony." dark>
+    <SectionShell 
+      id="program" 
+      label="The Itinerary" 
+      title="7 Days · Raw Science" 
+      subtitle="A meticulously curated week — lectures, live surgery, masterclasses and ceremony."
+      dark
+    >
+      {/* Original Grid Layout */}
       <div className="space-y-4">
         {days.map((d, i) => (
-          <motion.div
-            key={d.d}
-            initial={{ opacity: 0, x: -30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: i * 0.06, duration: 0.6 }}
-            className="grid md:grid-cols-[180px_1fr] gap-6 p-6 md:p-8 border border-[var(--gold)]/15 hover:border-[var(--gold)]/50 bg-[var(--burgundy)]/20 hover:bg-[var(--burgundy)]/40 transition-all group"
-          >
-            <div>
-              <div className="font-display text-3xl gradient-gold-text">{d.d}</div>
-              <div className="text-xs uppercase tracking-[0.3em] text-[var(--ivory)]/60 mt-1">21+{i} Nov</div>
-            </div>
-            <div>
-              <h3 className="font-display text-2xl text-[var(--ivory)]">{d.t}</h3>
-              <ul className="mt-4 grid sm:grid-cols-3 gap-3">
-                {d.b.map((x) => (
-                  <li key={x} className="flex items-start gap-2 text-sm text-[var(--ivory)]/75">
-                    <span className="text-[var(--gold)] mt-1">◆</span>
-                    {x}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </motion.div>
-        ))}
-      </div>
-    </SectionShell>
-  );
-}
+          <div key={d.d}>
+            <motion.button
+              onClick={() => setExpandedDay(expandedDay === i ? null : i)}
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.06, duration: 0.6 }}
+              className={`w-full grid md:grid-cols-[180px_1fr] gap-6 p-5 md:p-6 border transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group ${
+                expandedDay === i
+                  ? "border-[var(--gold)]/50 bg-[var(--burgundy)]/40"
+                  : "border-[var(--gold)]/15 hover:border-[var(--gold)]/50 bg-[var(--burgundy)]/20 hover:bg-[var(--burgundy)]/40"
+              }`}
+            >
+              <div className="text-left">
+                <div className="font-display text-3xl gradient-gold-text">{d.d}</div>
+                <div className="text-xs uppercase tracking-[0.3em] text-[var(--ivory)]/60 mt-1">{d.date}</div>
+              </div>
+              <div>
+                <h3 className="font-display text-2xl text-[var(--ivory)]">{d.t}</h3>
+                <div className="mt-4 text-xs uppercase tracking-[0.2em] text-[var(--gold)]/70">
+                  {expandedDay === i ? "Collapse details ↑" : "View timeline →"}
+                </div>
+              </div>
+            </motion.button>
 
-/* ---------------- DAILY FLOW ---------------- */
-export function DailyFlow() {
-  const flow = [
-    { time: "09:00", t: "Registration & Coffee", d: "Welcome desk · Press kit · Networking" },
-    { time: "10:00", t: "Scientific Sessions", d: "Keynote lectures by program directors" },
-    { time: "13:00", t: "Lunch & Discussions", d: "Round-table case discussions" },
-    { time: "14:30", t: "Live Patient Placement", d: "Real-time surgery in mega OT" },
-    { time: "17:00", t: "Case Review", d: "Outcome analysis · Q&A" },
-    { time: "19:30", t: "Networking Evening", d: "Royal dining · Mentor circles" },
-  ];
-  return (
-    <SectionShell id="daily" label="A Day at ICORE" title="The Daily Rhythm">
-      <div className="relative max-w-4xl mx-auto">
-        <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-[var(--gold)]/40 to-transparent" />
-        {flow.map((f, i) => (
-          <motion.div
-            key={f.time}
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: i * 0.08 }}
-            className={`relative flex gap-6 mb-10 md:mb-14 md:w-1/2 ${i % 2 ? "md:ml-auto md:pl-12" : "md:pr-12 md:text-right"}`}
-          >
-            <div className={`absolute left-4 md:left-auto ${i % 2 ? "md:-left-2" : "md:-right-2"} w-4 h-4 rounded-full bg-[var(--gold)] shadow-gold ring-4 ring-[var(--burgundy-deep)]`} />
-            <div className="ml-12 md:ml-0">
-              <div className="font-display text-2xl gradient-gold-text">{f.time}</div>
-              <div className="font-display text-lg text-[var(--ivory)] mt-1">{f.t}</div>
-              <div className="text-sm text-[var(--ivory)]/60 mt-1">{f.d}</div>
-            </div>
-          </motion.div>
+            <AnimatePresence initial={false}>
+              {expandedDay === i && (
+                <motion.div
+                  key={`day-timeline-${i}`}
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: "auto" }}
+                  exit={{ opacity: 0, height: 0 }}
+                  transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+                  className="overflow-hidden"
+                >
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -6 }}
+                    transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+                    className="relative left-1/2 mt-4 w-screen max-w-[100vw] -translate-x-1/2"
+                  >
+                    <DailyFlowTimeline
+                      dayLabel={d.d}
+                      dayTitle={d.t}
+                      items={getTimelineItems(i)}
+                    />
+                  </motion.div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
         ))}
       </div>
     </SectionShell>

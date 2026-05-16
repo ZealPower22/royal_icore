@@ -9,7 +9,6 @@ import {
   Principles,
   WhatYouGet,
   Program,
-  DailyFlow,
   Faculty,
   MedicalPanel,
   Masterclasses,
@@ -65,7 +64,6 @@ function App() {
       <Principles />
       <WhatYouGet />
       <Program />
-      <DailyFlow />
       <Faculty />
       <MedicalPanel />
       <Masterclasses />
