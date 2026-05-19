@@ -1,6 +1,8 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import { DailyFlowTimeline } from "./DailyFlowTimeline";
+import { FacultyCard, type FacultyMember } from "./FacultyCard";
+import { MasterclassesSection } from "./Masterclasses";
 import { Ornament, SectionLabel } from "./Ornament";
 
 type CartItemPayload = {
@@ -99,11 +101,15 @@ export function CoreStory() {
             title: "Osseointegration",
             tag: "Branemark Legacy",
             desc: "The classical paradigm — biological bonding of titanium with cortical & cancellous bone, refined over 50 years of academic rigor.",
+            image: "/images/osseointegration.png",
+            imageAlt: "Osseointegration — classical implantology paradigm",
           },
           {
             title: "Corticobasal Implantology",
             tag: "Immediate Function",
             desc: "The contemporary paradigm — engaging dense cortical plates for immediate loading, full-arch rehabilitation, and faster return to function.",
+            image: "/images/corticobasal-implantology.png",
+            imageAlt: "Corticobasal implantology — immediate function paradigm",
           },
         ].map((s, i) => (
           <motion.div
@@ -111,13 +117,30 @@ export function CoreStory() {
             initial={{ opacity: 0, x: i === 0 ? -30 : 30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="ornament-frame p-10 glass"
+            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+            className="group ornament-frame overflow-hidden glass"
           >
-            <div className="text-xs uppercase tracking-[0.3em] text-[var(--gold)]">{s.tag}</div>
-            <h3 className="mt-4 font-display text-3xl text-[var(--ivory)]">{s.title}</h3>
-            <div className="gold-divider my-6" />
-            <p className="font-serif text-lg leading-relaxed text-[var(--ivory)]/75">{s.desc}</p>
+            <div className="relative aspect-[16/10] overflow-hidden">
+              <img
+                src={s.image}
+                alt={s.imageAlt}
+                className="h-full w-full object-cover object-center transition-transform duration-700 ease-out group-hover:scale-[1.04]"
+                loading="lazy"
+              />
+              <motion.div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[var(--burgundy-deep)] via-[var(--burgundy-deep)]/50 to-[var(--burgundy)]/10" aria-hidden />
+              <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100 bg-gradient-to-br from-[var(--gold)]/10 via-transparent to-transparent" />
+              <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[var(--gold)]/60 to-transparent" />
+              <div className="absolute bottom-4 left-5 right-5 md:bottom-5 md:left-6 md:right-6">
+                <div className="text-[10px] uppercase tracking-[0.35em] text-[var(--gold)]">{s.tag}</div>
+                <h3 className="mt-2 font-display text-2xl md:text-3xl text-[var(--ivory)] drop-shadow-lg">
+                  {s.title}
+                </h3>
+              </div>
+            </div>
+            <div className="relative p-8 md:p-10">
+              <div className="gold-divider mb-5 opacity-60 group-hover:opacity-100 transition-opacity duration-500" />
+              <p className="font-serif text-base md:text-lg leading-relaxed text-[var(--ivory)]/75">{s.desc}</p>
+            </div>
           </motion.div>
         ))}
       </div>
@@ -169,7 +192,7 @@ export function WhatYouGet() {
     { t: "Digital Asset Pack", d: "Surgical videos, CBCT scans, prosthetic libraries — yours forever." },
     { t: "Clinical Hands-on Log", d: "Place 5–20 implants under direct mentor supervision." },
     { t: "Indexed Publication", d: "Co-author opportunity on peer-reviewed indexed journals." },
-    { t: "Recommendation Letter", d: "Personalized letter from program directors upon completion." },
+    { t: "Limca Book of records", d: "Personalized letter from program directors upon completion." },
     { t: "Professional Network", d: "Lifetime access to the ICORE alumni & mentor circle." },
   ];
   return (
@@ -204,92 +227,83 @@ export function Program() {
   const [expandedDay, setExpandedDay] = useState<number | null>(null);
   
   const days = [
-    { d: "Day 1", t: "Opening & Foundations", date: "21 Nov" },
-    { d: "Day 2", t: "Osseointegration Masterclass", date: "22 Nov" },
-    { d: "Day 3", t: "Corticobasal Day", date: "23 Nov" },
-    { d: "Day 4", t: "Zygomatic Surgery Day", date: "24 Nov" },
-    { d: "Day 5", t: "Digital & 3D Printing", date: "25 Nov" },
-    { d: "Day 6", t: "Research & Publication", date: "26 Nov" },
-    { d: "Day 7", t: "Gala & Cultural Night", date: "27 Nov" },
+    { d: "Day 1", t: "Basics of Immediate Loading", date: "21 Nov" },
+    { d: "Day 2", t: " Advanced Biocortical & Tricortical Anchorage", date: "22 Nov" },
+    { d: "Day 3", t: "Camp event + Live Patient Hands-On", date: "23 Nov" },
+    { d: "Day 4", t: "Camp event + Ozone Masterclass", date: "24 Nov" },
+    { d: "Day 5", t: "Camp + Research + Photography", date: "25 Nov" },
+    { d: "Day 6", t: "Camp + Final cases", date: "26 Nov" },
+    { d: "Day 7", t: "Certificate and Award ceremony", date: "27 Nov" },
   ];
 
   const getTimelineItems = (index: number) => {
     switch (index) {
       case 0:
         return [
-          { time: "09:00", t: "Registration & Welcome", d: "Badge collection · Welcome packet · Meet directors" },
-          { time: "10:00", t: "Inaugural Ceremony", d: "Live music · Formal inauguration · Global address" },
-          { time: "11:00", t: "Keynote Session", d: "The Cortex Unites — A history of innovation" },
-          { time: "13:00", t: "Lunch & Networking", d: "Round-table discussions · Faculty introductions" },
-          { time: "14:30", t: "Diagnostic Protocols Workshop", d: "CBCT interpretation · Case planning · Hands-on demos" },
-          { time: "17:00", t: "Q&A Panel", d: "Directors answer participant questions" },
-          { time: "19:30", t: "Welcome Dinner", d: "Casual networking · Meet global peers" },
+          { time: "09:00", t: "Debate Registration & Welcome"},
+          { time: "10:00", t: "Inaugural Lectures - Fundamentals of Immediate loading"},
+          { time: "12:30", t: "High Tea / Brunch"},
+          { time: "13:30", t: "Inaugration and Opening Ceremony"},
+          { time: "15:00", t: "Lunch Break"},
+          { time: "16:00", t: "Afternoon Lectures"},
+          { time: "17:00", t: "Cultural Evening celebrations"},
+          { time: "20:00"},
         ];
       case 1:
         return [
-          { time: "09:00", t: "Morning Briefing", d: "Day 2 objectives · Faculty panel introduction" },
-          { time: "10:00", t: "Classical Osseointegration Theory", d: "50-year paradigm · Branemark principles · Biological foundations" },
-          { time: "12:00", t: "CBCT Case Review", d: "Real patient cases · Planning methodology · Decision trees" },
-          { time: "13:00", t: "Lunch & Case Discussions", d: "Interactive round-table with faculty" },
-          { time: "14:30", t: "Live Single-Unit Surgery", d: "Real-time implant placement with commentary" },
-          { time: "16:00", t: "Multi-Unit Live Placement", d: "Full-arch case management · Timing · Sequencing" },
-          { time: "17:30", t: "Surgery Debrief", d: "Technical pearls · Complications avoidance · Q&A" },
-          { time: "19:30", t: "Surgeon's Dinner", d: "Exclusive faculty networking" },
+          { time: "09:00", t: "Lectures - Advanced Biocortical & Tricortical Anchorage Concepts"},
+          { time: "10:30", t: "High Tea / Brunch"},
+          { time: "11:00", t: "Lectures and Continued Advanced Sessions"},
+          { time: "12:30", t: "High Tea / Brunch"},
+          { time: "13:00", t: "Lectures - Clinical Applications"},
+          { time: "14:30", t: "Lunch"},
+          { time: "15:30", t: "Afternoon Lectures"},
+          { time: "19:00", t: "Gala night 1"},
+          { time: "22:00"},
         ];
       case 2:
         return [
-          { time: "09:00", t: "Morning Philosophy Session", d: "Immediate loading paradigm · Cortical-first approach" },
-          { time: "10:30", t: "Anatomy Workshop", d: "Cortical anatomy · Engagement strategies · 3D planning" },
-          { time: "12:00", t: "Case Planning Lab", d: "Full-arch replanning · Multiple cases · Hands-on practice" },
-          { time: "13:00", t: "Lunch & Peer Discussions", d: "Clinical pearls exchange" },
-          { time: "14:30", t: "Live Full-Arch Placement #1", d: "Complete arch placement · Immediate loading protocol" },
-          { time: "16:30", t: "Live Full-Arch Placement #2", d: "Different anatomy · Problem-solving in real-time" },
-          { time: "18:00", t: "Complication Management", d: "What to do when cortex isn't perfect · Contingency plans" },
-          { time: "19:30", t: "Celebratory Dinner", d: "Day's achievements · Peer bonding" },
+          { time: "09:00", t: "Zygomatic Masterclass (Dr. Johnson Raja James) +  3D Model Hands on"},
+          { time: "12:00", t: "Prosthodontics 3D printing Master class"},
+          { time: "12:00", t: "Zygomatic Live Surgery"},
+          { time: "12:00", t: "FMR Implantology Live Surgery - Hands on"},
+          { time: "18:00", t: "Prosthodontics  3D Printing Digital Workflow - hands on"},
+          { time: "20:00"},
         ];
       case 3:
         return [
-          { time: "09:00", t: "Zygomatic Anatomy Deep Dive", d: "3D anatomy · Trajectory planning · Virtual surgery" },
-          { time: "10:30", t: "Pre-surgical CBCT Analysis", d: "Sinus anatomy · Safety margins · Surgical approach selection" },
-          { time: "12:00", t: "Cadaver Simulation Lab", d: "Hands-on with anatomical models · Bone anatomy exploration" },
-          { time: "13:00", t: "Lunch & Faculty Q&A", d: "Expert consultation · Real patient cases" },
-          { time: "14:00", t: "Live Zygomatic Surgery - Block 1", d: "First 2-hour uninterrupted live case" },
-          { time: "16:15", t: "Break & Commentary", d: "Analysis of surgical approach · Technical pearls" },
-          { time: "17:00", t: "Live Zygomatic Surgery - Block 2", d: "Complex case completion · Troubleshooting" },
-          { time: "19:00", t: "Surgeon's Mastermind Dinner", d: "Elite networking with zygomatic specialists" },
+          { time: "09:00", t: "Ozone Theraphy Masterclass (Dr. Sudhir Doley)"},
+          { time: "12:00", t: "FMR Implantology Live Surgery - Hands on"},
+          { time: "12:00", t: "Ozone Theraphy Live Patient -  Hands on"},
+          { time: "12:00", t: "Digital Workflow Prosthodontics 3D Printing"},
+          { time: "18:00", t: "3D Printed Prosthetics Patient Delivery - Hands on"},
+          { time: "20:00"},
         ];
       case 4:
         return [
-          { time: "09:00", t: "Digital Workflow Overview", d: "CAD/CAM pipeline · Technology stack · Integration" },
-          { time: "10:00", t: "Intraoral Scanning Masterclass", d: "Scanning techniques · Data accuracy · File optimization" },
-          { time: "11:30", t: "3D Design Lab", d: "Full-arch design · Milling software · Prosthetic aesthetics" },
-          { time: "13:00", t: "Lunch & Technology Showcase", d: "Latest 3D printing innovations · Vendor expo" },
-          { time: "14:00", t: "Milling & Printing Workshop", d: "Hands-on with milling units · Resin printer operation · Curing protocols" },
-          { time: "15:30", t: "Live Case: Scan to Delivery", d: "Real patient case from scan to finished prosthesis" },
-          { time: "17:00", t: "Quality Control & Finishing", d: "Polishing · Adjustments · Patient insertion" },
-          { time: "19:00", t: "Tech Leaders Dinner", d: "Digital dentistry pioneers networking" },
+          { time: "09:00", t: "Research KAR Masterclass"},
+          { time: "09:00", t: "Dental Photgraphy Masterclass"},
+          { time: "12:00", t: "FMR Implantology Live Surgery - Hands on"},
+          { time: "12:00", t: "Dental Photgraphy Hands on - Live Patient demos"},
+          { time: "12:00", t: "Digital Workflow Prosthodontics 3D Printing"},
+          { time: "18:00", t: "3D Printed Prosthetics Patient Delivery - Hands on"},
+          { time: "20:00"},
         ];
       case 5:
         return [
-          { time: "09:00", t: "Research Methodology Seminar", d: "Study design · Data collection · Statistical foundations" },
-          { time: "10:30", t: "Manuscript Writing Workshop", d: "Structure · Literature review · Results presentation" },
-          { time: "12:00", t: "Statistical Methods for Clinicians", d: "Practical statistics · CBCT analysis · Outcome measurement" },
-          { time: "13:00", t: "Lunch & Author Round-Tables", d: "Published researchers share insights" },
-          { time: "14:00", t: "Journal Submission Strategy", d: "Indexed journals · Peer review process · Publication timeline" },
-          { time: "15:30", t: "Co-Author Opportunity Briefing", d: "ICORE publication pathway · Your research contribution" },
-          { time: "16:30", t: "Q&A with Editorial Boards", d: "Journal editors answer questions" },
-          { time: "18:00", t: "Research Gala Reception", d: "Academic networking · Award announcements" },
+          { time: "09:00", t: "Research Masterclass - Advanced Topics"},
+          { time: "12:00", t: "FMR Implantology Live Surgery - Hands on"},
+          { time: "12:00", t: "Digital Workflow Prosthodontics 3D Printing"},
+          { time: "18:00", t: "3D Printed Prosthetics Patient Delivery - Hands on"},
+          { time: "20:00"},
         ];
       case 6:
         return [
-          { time: "14:00", t: "Closing Academic Session", d: "Program review · Key takeaways · Faculty wisdom circle" },
-          { time: "15:30", t: "Awards Ceremony", d: "Best case presentations · Leadership recognition · Honors" },
-          { time: "17:00", t: "Preparation & Refreshment Break", d: "Rest, freshen up, prepare for evening" },
-          { time: "18:30", t: "Red Carpet Reception", d: "Welcome drinks · Photo opportunities · Pre-dinner mingling" },
-          { time: "19:30", t: "Royal Rajasthani Gala Dinner", d: "Multi-course feast · Royal heritage celebration" },
-          { time: "21:00", t: "Folk Performances & Entertainment", d: "Traditional Rajasthani dance · Live music · Cultural immersion" },
-          { time: "22:30", t: "Closing Rites & Farewell", d: "Torch lighting ceremony · Alumni induction · Goodbye circles" },
-          { time: "Late Night", t: "After-Party & Networking", d: "Informal celebrations · Final connections" },
+          { time: "09:00", t: "FMR Implantology Live Surgery - Hands on"},
+          { time: "12:00", t: "FMR Implantology Live Surgery - Continued Hands on"},
+          { time: "18:00", t: "3D Printed Prosthetics Patient Delivery - Hands on"},
+          { time: "21:00", t: "Victory Gala Party - Certificate and Awards Night"},
+          { time: "23:59"},
         ];
       default:
         return [];
@@ -367,56 +381,56 @@ export function Program() {
 
 /* ---------------- FACULTY ---------------- */
 export function Faculty() {
-  const groups = [
-    {
-      title: "Program Directors",
-      members: [
-        { n: "Dr. A. Sharma", r: "Co-Founder, Cortico Core", y: "25+ yrs" },
-        { n: "Dr. R. Mehta", r: "Director, Implant Research", y: "22+ yrs" },
-      ],
-    },
+  const img = (file: string) => `/images/faculty/${file}`;
+
+  const groups: { title: string; members: FacultyMember[] }[] = [
     {
       title: "Specialist Faculty",
       members: [
-        { n: "Dr. K. Rao", r: "Zygomatic Surgery Lead", y: "18+ yrs" },
-        { n: "Dr. P. Iyer", r: "Digital Workflow Head", y: "15+ yrs" },
-        { n: "Dr. S. Khan", r: "Prosthodontics Chair", y: "20+ yrs" },
+        { n: "Dr. Ashish Sethi", r: "MOI SWITZERLAND · MS IMPLANT", y: "FFA · FAFO (Ortho) · FILI London · Master of Oral Implantology", image: img("ashish-sethi.jpeg") },
+        { n: "Dr. N.B Singh", r: "SENIOR STRATEGIC IMPLANTOLOGIST", y: "Advanced corticobasal techniques · Clinical mentor", image: img("nb-singh.jpeg") },
+        { n: "Dr. Abhaydeep Singh", r: "IMPLANT DESIGN EXPERT", y: "Bi Cortical Implantologist · 10+ Years · Developing macro-thread designs that dissipate masticatory stress across the basal bone, preventing localized pressure and crestal resorption", image: img("abhaydeep-singh.jpeg") },
+        { n: "Dr. Sudhir Doley", r: "PIONEER TRAINER FOR OZONE DENTISTRY IN INDIA", y: "Ozone–Basal Synergy protocol architect · Bio-logical approach advocate" },
+        { n: "Dr. Shahul Hameed", r: "BDS · MDS PROSTHODONTICS", y: "Ozone Fellow & Diplomate BOCI · Prosthodontic–implant interface · Full-arch specialist" },
       ],
     },
     {
       title: "Clinical Heads",
       members: [
-        { n: "Dr. M. Patel", r: "Live Surgery Coordinator", y: "16+ yrs" },
-        { n: "Dr. N. Gupta", r: "Hands-on Mentor", y: "14+ yrs" },
+        { n: "Dr. Kanak Pareek", r: "BDS MDS OMFR (CPS)", y: "Founder of Metagnostic · Inventor of the Angle Assist and IOPA surgical systems · Project Director of Robotic & Guided Surgery Technical R&D" },
+        { n: "Dr. Ayush Shrivastava", r: "BDS MDS OMFS (CPS)", y: "Bicortical Implantologist · Chief Scientist at Metagnostics · Expert in Robotic Innovations in dental surgery" },
+        { n: "Dr. Vishwas Sharma", r: "BI CORTICAL SURGEON", y: "Implantologist · Perioperative Care Specialist", image: img("vishwas-sharma.jpeg") },
+        { n: "Dr. Shiva Kumar S.A.", r: "BDS · DIGITAL WORKFLOW", y: "Master of 3D Printing and Digital Workflow · Digital dentistry pioneer · 2-day intensive lead", image: img("shiva-kumar.jpeg") },
+      ],
+    },
+    {
+      title: "Program Directors",
+      members: [
+        { n: "Dr. Kanak Pareek", y: "Founder & Chief Innovator · Inventor of the Angle Assist and IOPA surgical systems · Project Director of Robotic & Guided Surgery Technical R&D" },
+        { n: "Dr. Ayush Shrivastava", y: "Founder & Chief Scientist · Bicortical Implantologist · Chief Scientist at Metagnostics · Expert in Robotic Innovations in dental surgery" },
+        { n: "Dr. Kailash Pareek", y: "Senior Physician · Medical Examiner (LIC) · 43 yrs experience", image: img("kailash-pareek.jpeg") },
+        { n: "Dr. Ashish Shrivastava", y: "Senior Dental Surgeon · 35 yrs of clinical experience" },
+        { n: "Dr. Manju Shrivastava", y: "Senior Implantologist · 30 years of clinical experience" },
+        { n: "Dr. Sapt Rishi Patel", y: "Oral & Maxillofacial Surgeon · IDA President Alwar", image: img("sapt-rishi-patel.jpeg") },
+        { n: "Dr. Abhaydeep Singh", y: "Bi Cortical Implantologist · 15+ Years", image: img("abhaydeep-singh.jpeg") },
+        { n: "Dr. Reha Patel", y: "Senior Aesthetic Expert · Chief Co-Ordinator I.C.O.R.E 2026", image: img("reha-patel.jpeg") },
+        { n: "Dr. Vishwas Sharma", y: "Bi Cortical Surgeon · Implantologist · Perioperative Care Specialist", image: img("vishwas-sharma.jpeg") },
       ],
     },
   ];
+
   return (
     <SectionShell id="faculty" label="The Mentors" title="Faculty & Program Leaders" dark>
       <div className="space-y-16">
         {groups.map((g) => (
           <div key={g.title}>
-            <div className="flex items-center gap-4 mb-8">
-              <h3 className="font-display text-2xl text-[var(--gold)] tracking-wide">{g.title}</h3>
-              <div className="flex-1 h-px bg-[var(--gold)]/20" />
+            <div className="mb-8 flex items-center gap-4">
+              <h3 className="font-display text-2xl tracking-wide text-[var(--gold)]">{g.title}</h3>
+              <div className="h-px flex-1 bg-[var(--gold)]/20" />
             </div>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid gap-6 md:grid-cols-2">
               {g.members.map((m, i) => (
-                <motion.div
-                  key={m.n}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.08 }}
-                  className="p-8 glass hover:bg-[var(--burgundy)]/40 transition-all group"
-                >
-                  <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[var(--gold)] to-[var(--burgundy)] flex items-center justify-center font-display text-2xl text-[var(--burgundy-deep)]">
-                    {m.n.split(" ")[1]?.[0] ?? "✦"}
-                  </div>
-                  <h4 className="mt-5 font-display text-xl text-[var(--ivory)]">{m.n}</h4>
-                  <p className="text-sm text-[var(--gold-soft)] mt-1">{m.r}</p>
-                  <p className="text-xs uppercase tracking-[0.3em] text-[var(--ivory)]/50 mt-3">{m.y}</p>
-                </motion.div>
+                <FacultyCard key={`${g.title}-${m.n}-${i}`} member={m} index={i} />
               ))}
             </div>
           </div>
@@ -463,67 +477,9 @@ export function MedicalPanel() {
 
 /* ---------------- MASTERCLASSES ---------------- */
 export function Masterclasses() {
-  const [active, setActive] = useState(0);
-  const items = [
-    {
-      tag: "A",
-      t: "3D Printing & Same-Day Dentistry",
-      d: "Complete digital workflow from intraoral scan to printed prosthesis in under 8 hours. Hands-on with industry-grade resin printers and CAD software.",
-      points: ["Intraoral scanning protocols", "CAD design for full-arch", "Resin selection & curing", "Same-day delivery"],
-    },
-    {
-      tag: "B",
-      t: "Zygomatic Surgery",
-      d: "Four-hour uninterrupted live zygomatic implant placement. Watch master surgeons navigate complex anatomy with bicortical engagement.",
-      points: ["Pre-surgical CBCT planning", "Sinus-respecting trajectories", "Quad-zygoma protocols", "Complication management"],
-    },
-    {
-      tag: "C",
-      t: "Ozone Therapy",
-      d: "Biological integration through medical-grade ozone — accelerated healing, microbial decontamination, and improved bone-implant interface.",
-      points: ["Ozone generators & delivery", "Peri-implant disinfection", "Tissue regeneration", "Evidence base & dosing"],
-    },
-  ];
   return (
     <SectionShell id="masterclasses" label="Deep Dives" title="Masterclasses" dark>
-      <div className="grid md:grid-cols-[280px_1fr] gap-8">
-        <div className="space-y-2">
-          {items.map((it, i) => (
-            <button
-              key={it.tag}
-              onClick={() => setActive(i)}
-              className={`w-full text-left p-5 border transition-all ${
-                active === i
-                  ? "border-[var(--gold)] bg-[var(--burgundy)]/60"
-                  : "border-[var(--gold)]/15 hover:border-[var(--gold)]/40 bg-[var(--burgundy)]/20"
-              }`}
-            >
-              <div className="flex items-center gap-3">
-                <span className={`font-display text-2xl ${active === i ? "text-[var(--gold)]" : "text-[var(--ivory)]/40"}`}>{it.tag}</span>
-                <span className="font-display text-base text-[var(--ivory)]">{it.t}</span>
-              </div>
-            </button>
-          ))}
-        </div>
-        <motion.div
-          key={active}
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="ornament-frame p-10 glass"
-        >
-          <div className="text-xs uppercase tracking-[0.3em] text-[var(--gold)]">Masterclass {items[active].tag}</div>
-          <h3 className="mt-3 font-display text-3xl md:text-4xl text-[var(--ivory)]">{items[active].t}</h3>
-          <p className="mt-5 font-serif text-lg text-[var(--ivory)]/75 leading-relaxed">{items[active].d}</p>
-          <ul className="mt-6 grid sm:grid-cols-2 gap-3">
-            {items[active].points.map((p) => (
-              <li key={p} className="flex items-start gap-2 text-sm text-[var(--ivory)]/80">
-                <span className="text-[var(--gold)] mt-1">◆</span> {p}
-              </li>
-            ))}
-          </ul>
-        </motion.div>
-      </div>
+      <MasterclassesSection />
     </SectionShell>
   );
 }
@@ -789,7 +745,7 @@ export function FinalCTA() {
           </div>
           <div>
             <div className="text-[10px] uppercase tracking-[0.3em] text-[var(--gold)]">Venue</div>
-            <div className="mt-2 font-display text-lg text-[var(--ivory)]">CITRC, Jaipur</div>
+            <div className="mt-2 font-display text-lg text-[var(--ivory)]">SIAM, Jaipur</div>
           </div>
           <div>
             <div className="text-[10px] uppercase tracking-[0.3em] text-[var(--gold)]">Email</div>

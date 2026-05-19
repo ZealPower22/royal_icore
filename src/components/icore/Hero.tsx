@@ -51,8 +51,8 @@ export function Hero() {
           transition={{ duration: 1.2, delay: 0.2 }}
           className="space-y-3"
         >
-          <div className="text-xs tracking-[0.5em] text-[var(--gold)] font-display uppercase">
-            Cortico Core · Excellence
+          <div className="text-xl font-bold tracking-[0.4em] text-[var(--gold)] font-display uppercase">
+            Cortico Core
           </div>
           <Ornament />
           <div className="text-xs tracking-[0.4em] text-[var(--ivory)]/70 uppercase">
@@ -102,7 +102,7 @@ export function Hero() {
           <span className="text-[var(--gold)]">◆</span>
           <span>21–27 November 2026</span>
           <span className="text-[var(--gold)]">◆</span>
-          <span>CITRC Jaipur</span>
+          <span>SIAM Institute</span>
           <span className="text-[var(--gold)]">◆</span>
           <span>09:00 — 18:00</span>
           <span className="text-[var(--gold)]">◆</span>
@@ -137,7 +137,7 @@ export function Hero() {
           <span className="group-hover:translate-x-1 transition-transform">→</span>
         </motion.a>
 
-        <p className="mt-6 text-[10px] uppercase tracking-[0.4em] text-[var(--ivory)]/50">
+        <p className="mt-6 text-[12px] font-bold uppercase tracking-[0.4em] text-[var(--ivory)]/50">
           CPD/CME Certificate · Indexed Research Pathway · World-Record Attempt
         </p>
       </motion.div>
